@@ -18,7 +18,45 @@ const makeGraph = (mock) => {
         graph[slice[0]].push({ dest: slice[1], weight: slice[2] })
     }
 
-    console.log(graph)
+    return graph
 }
 
-makeGraph(mock)
+const makeGraphTag = (graph) => {
+    //console.log(graph)
+    const graphTag = new Array(graph.length * 2)
+    const s1 = 0 
+    const s2 = graph.length
+
+    for (let i = 0; i < graphTag.length; i++) {
+        graphTag[i] = new Array()
+    }
+    // recorrer vertices
+    for (let i = 0; i < graph.length; i++) {
+        // recorrer aristas
+        for (let j = 0; j < graph[i].length; j++ ) {
+            let edge = graph[i][j]
+            if (edge.weight % 2 == 0) { // par
+                graphTag[s1 + i].push({ dest: s1 + edge.dest, weight: edge.weight })
+                graphTag[s2 + i].push({ dest: s2 + edge.dest, weight: edge.weight })
+            } else { //inpar
+                graphTag[s1 + i].push({ dest: s2 + edge.dest, weight: edge.weight })
+                graphTag[s2 + i].push({ dest: s1 + edge.dest, weight: edge.weight })
+            }
+        }
+    }
+    return graphTag
+}
+
+const findOddPath = (graph, v, t) => {
+    const graphTag = makeGraphTag(graph)
+
+    const t2 = t + graph.length
+    
+    const bfsList = bfs ( graph, v )
+
+    return bfsList.include(t2) 
+}
+
+const newGraph = makeGraph(mock)
+
+makeGraphTag(newGraph)
