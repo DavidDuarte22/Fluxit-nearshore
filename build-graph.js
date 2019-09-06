@@ -22,7 +22,6 @@ const makeGraph = (mock) => {
 }
 
 const makeGraphTag = (graph) => {
-    //console.log(graph)
     const graphTag = new Array(graph.length * 2)
     const s1 = 0 
     const s2 = graph.length
@@ -47,16 +46,52 @@ const makeGraphTag = (graph) => {
     return graphTag
 }
 
+
+function bfs(graph, v) {
+
+    let result = new Array();
+    // Create a Queue and add our initial node in it
+    let q = new Array();
+    let explored = new Set();
+    q.push(v);
+ 
+    // Mark the first node as explored explored.
+    explored.add(v);
+ 
+    // We'll continue till our queue gets empty
+    while (!q.length==0) {
+       let t = q.shift();
+       
+       // Log every element that comes out of the Queue
+       result.push(t);
+ 
+       // 1. In the edges object, we search for nodes this node is directly connected to.
+       // 2. We filter out the nodes that have already been explored.
+       // 3. Then we mark each unexplored node as explored and add it to the queue.
+       graph[t]
+       .filter(e => !explored.has(e.dest))
+       .forEach(e => {
+          explored.add(e.dest);
+          q.push(e.dest);
+       });
+       
+    }
+    return result;
+ }
+
 const findOddPath = (graph, v, t) => {
+    // Reduction solution: transform one problem into another problem
+    // an odd path has to contain an odd number of odd weights. We want to force this attribution to our reduction
+    // make graphTag 
     const graphTag = makeGraphTag(graph)
-
+    // 
     const t2 = t + graph.length
-    
-    const bfsList = bfs ( graph, v )
-
-    return bfsList.include(t2) 
+    const bfsList = bfs ( graphTag, v )
+    return bfsList.includes(t2) 
 }
 
 const newGraph = makeGraph(mock)
 
-makeGraphTag(newGraph)
+
+console.log(findOddPath(newGraph, 0, 3))
+
