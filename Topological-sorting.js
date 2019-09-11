@@ -51,7 +51,7 @@ const topologicalSortHelper = (graph, node, explored, s) => {
  
  const topologicalSort = (graph) => {
     // Create a Stack to keep track of all elements in sorted order
-    let s = new Array(graph.length);
+    let s = new Array();
     let explored = new Set();
  
     // For every unvisited node in our graph, call the helper.
@@ -63,15 +63,53 @@ const topologicalSortHelper = (graph, node, explored, s) => {
     
     return s;
  }
- 
-const findPath = (array) => {
-    // make graph
-    const graph = makeGraph(array)
+
+function findUEdges(u, graph){
+    let u_edges = new Array()
+    for (let i =0; i< graph.length; i++){
+        graph[i].forEach (e =>{
+            if (e.dest==u){
+                u_edges.push( {orig: i, weight:e.weight})
+            }
+        });
+        
+    }
+
+    return u_edges;
+}
+const findLightestPath = (graph,s,v) => {
+    //Initialize distance array
+    let distance = new Array()
+    for (let i = 0; i < graph.length; i++) {
+        distance[i] = Number.MAX_VALUE;
+    }
+    distance[s]=0
+
     // order the graph -> TopologicalSort
-    const newGraph = topologicalSort(graph)
-    return newGraph
+    const orderedVertices = topologicalSort(graph)
+
+    let s_found = false;
+    while (orderedVertices.length>0){
+        u = orderedVertices.shift()
+
+        if (s==u){
+            found = true
+        }
+
+        if (found){
+            u_edges = findUEdges(u, graph)
+            
+            u_edges.forEach (e => 
+            {
+                distance[u]= Math.min(distance[u], distance[e.orig]+e.weight)
+            });
+        }
+        
+    }
+
+    return distance[v]
     // find lightest path 
 }
 
 
-console.log(findPath(mock))
+console.log(findLightestPath(makeGraph(mock),0,3))
